@@ -2,16 +2,14 @@ const { spawnSync } = require('child_process')
 
 const MASTER = 'master'
 
+const dry = process.argv.indexOf('--dry') !== -1
+
 const clog = console.log.bind(console)
 
 function error(msg) {
     console.error('Error:', target)
     process.exit(1)
 }
-
-const dry = process.argv.indexOf('--dry') !== -1
-
-if (!branch) error('no branch specified')
 
 function exec(command, args, ok, dry) {
     clog(NL, `${dry ? 'x': '>'} ${command} ${args.join(' ')}`, NL)
