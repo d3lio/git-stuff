@@ -6,9 +6,6 @@ const BRANCH_TYPES = {
     feature: 'feature',
     f: 'feature',
 
-    issue: 'issue',
-    i: 'issue',
-
     fix: 'fix',
     x: 'fix',
 

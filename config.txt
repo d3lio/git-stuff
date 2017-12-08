@@ -3,8 +3,11 @@
 	co = checkout
 	up = push origin
 	down = pull origin
-	fixup = "!node ~/git/scripts/fixup.js"
 	amend = "commit --amend"
+
+	new = "!node ~/git/scripts/new.js"
+	ff = "!node ~/git/scripts/ff.js"
+	fixup = "!node ~/git/scripts/fixup.js"
 [core]
 	filemode = false
 [user]
