@@ -1,0 +1,9 @@
+[alias]
+	st = status
+	co = checkout
+	up = push origin
+	down = pull origin
+	fixup = "!node ~/git/scripts/fixup.js"
+[user]
+        name = Delyan Dobrev
+        email = delqn.dobrev@gmail.com
