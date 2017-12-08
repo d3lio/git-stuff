@@ -13,12 +13,12 @@ const BRANCH_TYPES = {
     c: 'chore',
 }
 
-const type = process.argv[1]
-const name = process.argv[2]
+const type = process.argv[2]
+const name = process.argv[3]
 
 if (!type) error('no type specified')
 if (!name) error('no name specified')
 
-if (BRANCH_TYPES[TYPE]) error(`unknown branch type ${type}`)
+if (!BRANCH_TYPES[type]) error(`unknown branch type ${type}`)
 
-exec('git', ['checkout', '-b', `${BRANCH_TYPES[TYPE]}/${name}`], clog)
+exec('git', ['checkout', '-b', `${BRANCH_TYPES[type]}/${name}`], clog)
