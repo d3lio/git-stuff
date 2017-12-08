@@ -1,7 +1,8 @@
 const { spawnSync } = require('child_process')
 
-const NEWLINE = '\n'
-const regex = /([0-9A-Fa-f]*) (fixup! )?(.*)/
+const NL = '\n'
+const TAB = ' '.repeat(4)
+const COMMIT_REGEXP = /([0-9A-Fa-f]*) (fixup! )?(.*)/
 
 const dry = process.argv.indexOf('--dry') !== -1
 
@@ -19,44 +20,42 @@ function fmt() {
     return `${this.hash} ${type}${this.message}`
 }
 
+if (dry) console.log('=== Dry run ===', NL)
+
 const target = exec(spawnSync('git', ['log', '--oneline']), stdout => {
-    const log = stdout.trim().split(NEWLINE).map(commit => {
-        const result = regex.exec(commit)
+    const log = stdout.trim().split(NL).map(commit => {
+        const result = COMMIT_REGEXP.exec(commit)
 
         const hash = result[1]
-        const fixup = result[2]
+        const fixup = Boolean(result[2])
         const message = result[3]
 
-        return {
-            hash,
-            message,
-            fixup: Boolean(fixup),
-            fmt
-        }
+        return { hash, message, fixup, fmt }
     })
 
-    if (!log.length) return 'Empty log'
+    if (!log.length) return 'empty log'
 
     const message = log[0].message
     const fixups = []
 
     for (commit of log) {
+        console.log(commit.fmt())
         if (!commit.fixup) return { fixups, commit }
 
-        if (message && commit.message != message) return 'Fixup mismatch'
+        if (message && commit.message != message) return [
+            'fixup mismatch', NL,
+            'expected:', NL, TAB, 'fixup!', message, NL,
+            'found:', NL, TAB, 'fixup!', commit.message
+        ].join('')
 
         fixups.push(commit)
     }
 
-    return 'Target not found'
+    return 'all commits are fixups'
 })
 
-if (dry) console.log('=== Dry run ===', NEWLINE)
-
 if (typeof target === 'object' && target) {
-    target.fixups.forEach(commit => console.log(commit.fmt()))
-    console.log(target.commit.fmt(), NEWLINE)
-    console.log(`# git commit --fixup ${target.commit.hash} #`, NEWLINE)
+    console.log(NL, `# git commit --fixup ${target.commit.hash} #`, NL)
     if (!dry) exec(spawnSync('git', ['commit', '--fixup', target.commit.hash]), stdout => console.log(stdout))
 } else if (typeof target === 'string') {
     console.error('Error:', target)
