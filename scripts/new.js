@@ -1,6 +1,6 @@
 'use strict'
 
-const { NL, TAB, clog, error, exec } = require('./common')
+const { clog, error, exec } = require('./common')
 
 const BRANCH_TYPES = {
     feature: 'feature',

@@ -4,6 +4,8 @@ const { spawnSync } = require('child_process')
 
 const NL = '\n'
 const TAB = ' '.repeat(4)
+const ORIGIN = 'origin'
+const MASTER = 'master'
 const clog = console.log.bind(console)
 
 function error(msg) {
@@ -29,6 +31,8 @@ function exec(command, args, ok, dry) {
 module.exports = {
     NL,
     TAB,
+    MASTER,
+    ORIGIN,
     clog,
     error,
     exec
