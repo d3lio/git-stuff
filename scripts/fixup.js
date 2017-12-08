@@ -3,6 +3,8 @@ const { spawnSync } = require('child_process')
 const NEWLINE = '\n'
 const regex = /([0-9A-Fa-f]*) (fixup! )?(.*)/
 
+const dry = process.argv.indexOf('--dry') !== -1
+
 function exec(result, ok) {
     if (result.error || result.stderr.toString()) {
         console.error('Error:', result.error || result.stderr.toString())
@@ -17,21 +19,17 @@ function fmt() {
     return `${this.hash} ${type}${this.message}`
 }
 
-const dry = process.argv.indexOf('--dry') !== -1
-
-if (dry) console.log('=== Dry run ===', NEWLINE)
-
 const target = exec(spawnSync('git', ['log', '--oneline']), stdout => {
     const log = stdout.trim().split(NEWLINE).map(commit => {
         const result = regex.exec(commit)
 
         const hash = result[1]
         const fixup = result[2]
-        const msg = result[3]
+        const message = result[3]
 
         return {
             hash,
-            message: msg,
+            message,
             fixup: Boolean(fixup),
             fmt
         }
@@ -52,6 +50,8 @@ const target = exec(spawnSync('git', ['log', '--oneline']), stdout => {
 
     return 'Target not found'
 })
+
+if (dry) console.log('=== Dry run ===', NEWLINE)
 
 if (typeof target === 'object' && target) {
     target.fixups.forEach(commit => console.log(commit.fmt()))
