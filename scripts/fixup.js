@@ -1,7 +1,7 @@
 const { spawnSync } = require('child_process')
 
 const NEWLINE = '\n'
-const regex = /([0-9A-Fa-f]*) (fixup! )?(.*)/;
+const regex = /([0-9A-Fa-f]*) (fixup! )?(.*)/
 
 function exec(result, ok) {
     if (result.error || result.stderr.toString()) {
@@ -39,8 +39,8 @@ const target = exec(spawnSync('git', ['log', '--oneline']), stdout => {
 
     if (!log.length) return 'Empty log'
 
-    const message = log[0].message;
-    const fixups = [];
+    const message = log[0].message
+    const fixups = []
 
     for (commit of log) {
         if (!commit.fixup) return { fixups, commit }
