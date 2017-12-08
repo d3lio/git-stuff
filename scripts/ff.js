@@ -9,7 +9,6 @@ function error(msg) {
     process.exit(1)
 }
 
-const branch = process.argv[1]
 const dry = process.argv.indexOf('--dry') !== -1
 
 if (!branch) error('no branch specified')
@@ -29,8 +28,13 @@ function exec(command, args, ok, dry) {
     }
 }
 
-exec('git', ['checkout', MASTER], clog, dry)
-exec('git', ['pull', 'origin', MASTER], clog, dry)
-exec('git', ['rebase', MASTER, branch, '--autosquash'], clog, dry)
-exec('git', ['checkout', MASTER], clog, dry)
-exec('git', ['merge', branch], clog, dry)
+exec('git', ['rev-parse', '--abbrev-ref', 'HEAD'], branch => {
+    clog(`The current branch is ${branch}`, NL)
+
+    exec('git', ['checkout', MASTER], clog, dry)
+    exec('git', ['pull', 'origin', MASTER], clog, dry)
+    exec('git', ['rebase', MASTER, branch, '--autosquash'], clog, dry)
+    exec('git', ['checkout', MASTER], clog, dry)
+    exec('git', ['merge', branch], clog, dry)
+})
+
