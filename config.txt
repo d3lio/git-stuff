@@ -14,5 +14,5 @@
 [core]
 	filemode = false
 [user]
-        name = Delyan Dobrev
-        email = delqn.dobrev@gmail.com
+	# name = Delyan Dobrev
+	# email = delqn.dobrev@gmail.com
