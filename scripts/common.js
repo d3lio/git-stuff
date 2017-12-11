@@ -13,20 +13,41 @@ function error(msg) {
     process.exit(1)
 }
 
-function exec(command, args, ok, dry) {
-    clog(NL, `${dry ? 'x': '>'} ${command} ${args.join(' ')}`, NL)
+function exec(command, args, opts, ok) {
+    if (arguments.length === 2) {
+        return execInternal(command, args, {})
+    } else if (typeof opts === 'function') {
+        return execInternal(command, args, {}, opts)
+    } else if (typeof opts === 'object') {
+        return execInternal(command, args, opts, ok)
+    } else {
+        error('unsupported args')
+    }
+}
 
-    if (dry) return
+function execInternal(command, args, { dry, v, env }, ok) {
+    const verbosity = typeof v !== 'number' ? 1 : v
 
-    const result = spawnSync(command, args)
+    if (dry) {
+        if (verbosity) clog(NL, ` o ${command} ${args.join(' ')}`)
+        return null
+    }
+
+    const result = env ? spawnSync(command, args, { env }) : spawnSync(command, args)
 
     const stderr = result.stderr.toString()
     const stdout = result.stdout.toString()
     if (result.error || (result.status && stderr)) {
+        if (verbosity) clog(NL, ` x ${command} ${args.join(' ')}`, NL)
         error(result.error || stderr)
     } else {
+        if (verbosity) clog(NL, ` > ${command} ${args.join(' ')}`, NL)
         return ok ? ok(stdout) : stdout
     }
+}
+
+function hasArg(arg) {
+    return process.argv.indexOf(arg) !== -1
 }
 
 module.exports = {
@@ -36,5 +57,6 @@ module.exports = {
     ORIGIN,
     clog,
     error,
-    exec
+    exec,
+    hasArg
 }

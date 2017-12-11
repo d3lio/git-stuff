@@ -1,6 +1,6 @@
 'use strict'
 
-const { NL, TAB, clog, error, exec } = require('./common')
+const { NL, TAB, clog, error, exec, hasArg } = require('./common')
 
 function fmt() {
     const type = this.fixup ? 'fixup! ' : ''
@@ -9,7 +9,7 @@ function fmt() {
 
 const COMMIT_REGEXP = /([0-9A-Fa-f]*) (fixup! )?(.*)/
 
-const dry = process.argv.indexOf('--dry') !== -1
+const dry = hasArg('--dry')
 
 const target = exec('git', ['log', '--oneline'], stdout => {
     const log = stdout.trim().split(NL).map(commit => {
@@ -45,6 +45,6 @@ const target = exec('git', ['log', '--oneline'], stdout => {
 })
 
 if (typeof target === 'object' && target) {
-    exec('git', ['commit', '--fixup', target.commit.hash], clog, dry)
+    exec('git', ['commit', '--fixup', target.commit.hash], { dry }, clog)
 }
 
