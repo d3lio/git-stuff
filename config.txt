@@ -1,18 +1,24 @@
-[alias]
-    graph = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-    ls = diff-tree --no-commit-id --name-only -r
-
-	st = status
-	co = checkout
-	up = push origin
-	down = pull origin
-	amend = "commit --amend"
-
-	new = "!node ~/git/scripts/new.js"
-	ff = "!node ~/git/scripts/ff.js"
-	fixup = "!node ~/git/scripts/fixup.js"
 [core]
-	filemode = false
+    filemode = false
 [user]
-	# name = Delyan Dobrev
-	# email = delqn.dobrev@gmail.com
+    # name = Delyan Dobrev
+    # email = delqn.dobrev@gmail.com
+[alias]
+    st = status
+    cm = commit
+    br = branch
+    co = !f() { git checkout "$@" > /dev/null && git status; }; f
+    cobr = co -B
+    fixup = !git commit --fixup $(git log -z | grep -vz fixup | head -n 1 | cut -d' ' -f2)
+    amend = !git commit --amend --no-edit && git status
+    edit = !git commit --amend && git status
+    ls = diff-tree --no-commit-id --name-only -r
+    up = push -u origin
+    local-ignore = update-index --assume-unchanged
+    local-unignore = update-index --no-assume-unchanged
+    graph = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(magenta)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    graph2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+
+    new = "!node ~/git/scripts/new.js"
+    ff = "!node ~/git/scripts/ff.js"
+    fixup2 = "!node ~/git/scripts/fixup.js"
