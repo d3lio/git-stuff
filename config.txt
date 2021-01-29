@@ -9,7 +9,7 @@
     br = branch
     co = !f() { git checkout "$@" > /dev/null && git status; }; f
     cobr = co -B
-    fixup = !git commit --fixup $(git log -z | grep -vz fixup | head -n 1 | cut -d' ' -f2)
+    fixup = !git commit --fixup $(git log --oneline | grep -v "fixup!" | head -n 1 | cut -d' ' -f1)
     amend = !git commit --amend --no-edit && git status
     edit = !git commit --amend && git status
     ls = diff-tree --no-commit-id --name-only -r
